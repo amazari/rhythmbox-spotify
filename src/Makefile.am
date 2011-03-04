@@ -1,4 +1,6 @@
-lib_LTLIBRARIES = librhythmbox-spotify.la
+plugindir = ${libdir}/rhythmbox/plugins/spotify
+
+plugin_LTLIBRARIES = librhythmbox-spotify.la
 
 librhythmbox_spotify_la_SOURCES = audio.c		   \
 								  appkey.c		   \
@@ -7,7 +9,37 @@ librhythmbox_spotify_la_SOURCES = audio.c		   \
 								  rb-spotify-plugin.c
 
 librhythmbox_spotify_la_LIBADD = $(DEPENDENCIES_LIBS)								  
-librhythmbox_spotify_la_LDFLAGS = $(DEPENDENCIES_LIBS)
 librhythmbox_spotify_la_CFLAGS = $(DEPENDENCIES_CFLAGS)
+librhythmbox_spotify_la_LDFLAGS = -module -avoid-version
+librhythmbox_spotify_la_LIBTOOLFLAGS = --tag=disable-static
+
+gtkbuilderdir = $(plugindir)
+gtkbuilder_DATA = spotify-prefs.ui
+
+plugin_in_files = spotify.rb-plugin
+
+%.rb-plugin: %.rb-plugin.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
+
+BUILT_SOURCES =							\
+	$(plugin_in_files:.rb-plugin.in=.rb-plugin) 		\
+	$(NULL)
+	
+plugin_DATA = 			\
+	$(BUILT_SOURCES)	\
+	$(NULL)
+
+EXTRA_DIST = 			\
+	$(uixml_DATA)		\
+	$(plugin_in_files)	\
+	$(NULL)
+
+CLEANFILES = 			\
+	$(BUILT_SOURCES)	\
+	$(NULL)
+
+DISTCLEANFILES =		\
+	$(BUILT_SOURCES)	\
+	$(NULL)
+
 
 								  

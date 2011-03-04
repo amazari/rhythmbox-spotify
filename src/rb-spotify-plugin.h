@@ -7,7 +7,7 @@
 #define __RBSPOTIFYPLUGIN_H__
 
 #include <glib-object.h>
-#include <spotify/api.h>
+#include <libspotify/api.h>
 #include <pthread.h>
 
 /*

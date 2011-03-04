@@ -49,7 +49,7 @@
 #include <gst/gst.h>
 #include <gst/base/gstbasesrc.h>
 #include <gst/base/gstpushsrc.h>
-#include <spotify/api.h>
+#include <libspotify/api.h>
 
 #include <rhythmbox/shell/rb-shell.h>
 #include <rhythmbox/sources/rb-browser-source.h>
@@ -368,12 +368,7 @@ rbspotifysrc_create (GstPushSrc *psrc, GstBuffer **outbuf)
 			return FALSE;
 		}
 
-		err = sp_session_player_play(src->sess, TRUE);
-		if (err != SP_ERROR_OK)
-		{
-			fprintf(stderr, "Couldn't play file %x", err);
-			return FALSE;
-		}
+		sp_session_player_play(src->sess, TRUE);
 		src->tloaded = TRUE;
 	}
 

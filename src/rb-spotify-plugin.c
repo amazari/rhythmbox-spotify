@@ -35,7 +35,6 @@
 
 #include <string.h> /* For strlen */
 
-#include <glib/gi18n-lib.h>
 #include <gmodule.h>
 #include <gtk/gtk.h>
 #include <glib.h>
@@ -44,19 +43,20 @@
 #include <gconf/gconf-value.h>
 #include <time.h>
 
-#include "eel-gconf-extensions.h"
-#include "rb-plugin.h"
-#include "rb-debug.h"
-#include "rb-shell.h"
-#include "rb-dialog.h"
-
-#include "rb-preferences.h"
+#include <rhythmbox/shell/rb-shell.h>
+#include <rhythmbox/lib/rb-debug.h>
+#include <rhythmbox/shell/rb-plugin.h>
+#include <rhythmbox/widgets/rb-dialog.h>
+#include <rhythmbox/lib/rb-builder-helpers.h>
+#include <rhythmbox/lib/rb-preferences.h>
 
 #include "rb-spotify-plugin.h"
 #include "rb-spotify-source.h"
 #include "rb-spotify-src.h"
-#include "rb-glade-helpers.h"
 #include "audio.h"
+
+#define CONF_SPOTIFY_USERNAME CONF_PREFIX "/spotify/username"
+#define CONF_SPOTIFY_PASSWORD CONF_PREFIX "/spotify/password"
 
 extern const char g_appkey[];
 
@@ -220,7 +220,7 @@ impl_activate (RBPlugin *plugin,
 
      
 	RBSpotifySource *source;
-	RhythmDBEntryType type;
+	RhythmDBEntryType *type;
 	RhythmDB *db;
 	char *entry_type_name, *username, *password;
 	int err;
@@ -232,11 +232,11 @@ impl_activate (RBPlugin *plugin,
 	audio_fifo_init(&g_audio_fifo);
 
 	spconfig.application_key_size = g_appkey_size;
-	err = sp_session_init(&spconfig, &pprivate->sess);
+	err = sp_session_create(&spconfig, &pprivate->sess);
 
 	
 	if (err != SP_ERROR_OK) {
-	     rb_error_dialog (NULL, _("Spotify Plugin"), "Error initialising spotify session");
+	     rb_error_dialog (NULL, "Spotify Plugin", "Error initialising spotify session");
 	     pprivate->sess = NULL;
 	     return;
 	}
@@ -250,35 +250,36 @@ impl_activate (RBPlugin *plugin,
 	     return;
 	}
 
-	username = eel_gconf_get_string (CONF_SPOTIFY_USERNAME);
-	password = eel_gconf_get_string (CONF_SPOTIFY_PASSWORD);
+	username = "scaroo";//eel_gconf_get_string (CONF_SPOTIFY_USERNAME);
+	password = "blink182";//eel_gconf_get_string (CONF_SPOTIFY_PASSWORD);
 	if (username == NULL || password == NULL) {
-	     rb_error_dialog (NULL, _("Spotify Plugin"), "Username and password not set.");
+	     rb_error_dialog (NULL, "Spotify Plugin", "Username and password not set.");
 	     return;
 	}
 	
-	err = sp_session_login(pprivate->sess, username, password);
-	fprintf(stderr, "err: %x", err);
+	sp_session_login(pprivate->sess, username, password);
 
 	rbspotifysrc_set_plugin(plugin);
 	
 	g_object_get (shell, "db", &db, NULL);
-	entry_type_name = g_strdup_printf ("spotify");
-	type = rhythmdb_entry_register_type (db, entry_type_name);
-	g_free (entry_type_name);
-	type->save_to_disk = FALSE;
-	type->category = RHYTHMDB_ENTRY_NORMAL;
-//	type->get_playback_uri = (RhythmDBEntryStringFunc) rb_daap_source_get_playback_uri;
+
+
+        type = g_object_new (RHYTHMDB_TYPE_ENTRY_TYPE,
+                                   "db", db,
+                                   "name", "spotify",
+                                   "save-to-disk", FALSE,
+                                   "category", RHYTHMDB_ENTRY_NORMAL,
+                                   NULL);
+        rhythmdb_register_entry_type (db, type);
+
 	g_object_unref (db);
 
-//	icon = rb_daap_plugin_get_icon (RB_DAAP_PLUGIN (plugin), password_protected, FALSE);
 	source = (RBSpotifySource*)RB_SOURCE (g_object_new (RBSPOTIFYSOURCE_TYPE,
 					  "name", "spotify",
 					  "entry-type", type,
 					  "shell", shell,
 					  "visibility", TRUE,
 //					  "sorting-key", CONF_STATE_SORTING,
-					  "source-group", RB_SOURCE_GROUP_SHARED,
 					  "plugin", RB_PLUGIN (plugin),
 					  NULL));
 
@@ -287,8 +288,6 @@ impl_activate (RBPlugin *plugin,
 	source->priv->type = type;
 	
 	rb_shell_register_entry_type_for_source (shell, (RBSource*)source,	 type);
-
-	rb_shell_append_source (shell, (RBSource*)source, NULL);
 
 //	return source;
 }
@@ -343,19 +342,20 @@ impl_create_configure_dialog (RBPlugin *plugin)
 	  char* t;
 	  
 	  if (pprivate->config_widget == NULL) {
-	       GladeXML *xml;
+	       GtkBuilder *xml;
 	       char *gladefile;
 
 	       gladefile = rb_plugin_find_file (plugin, "spotify-prefs.glade");
 	       g_assert (gladefile != NULL);
-	       xml = rb_glade_xml_new (gladefile, "spotify_vbox", plugin);
-	       g_free (gladefile);
 
-	       pprivate->config_widget = glade_xml_get_widget (xml, "spotify_vbox");
-	       pprivate->username_entry = glade_xml_get_widget (xml, "username_entry");
-	       pprivate->username_label = glade_xml_get_widget (xml, "username_label");
-	       pprivate->password_entry = glade_xml_get_widget (xml, "password_entry");
-	       pprivate->password_label = glade_xml_get_widget (xml, "password_label");
+	       xml = rb_builder_load(gladefile, plugin);
+
+
+	       pprivate->config_widget = gtk_builder_get_object(xml, "spotify_vbox");
+	       pprivate->username_entry = gtk_builder_get_object (xml, "username_entry");
+	       pprivate->username_label = gtk_builder_get_object(xml, "username_label");
+	       pprivate->password_entry = gtk_builder_get_object(xml, "password_entry");
+	       pprivate->password_label = gtk_builder_get_object(xml, "password_label");
 	
 	       g_object_unref (G_OBJECT (xml));
 
@@ -368,12 +368,11 @@ impl_create_configure_dialog (RBPlugin *plugin)
 	  gtk_entry_set_text (GTK_ENTRY (pprivate->password_entry),
 			      t ? t : "");
 
-	  pprivate->preferences = gtk_dialog_new_with_buttons (_("Spotify Preferences"),
+	  pprivate->preferences = gtk_dialog_new_with_buttons ("Spotify Preferences",
 							     NULL,
 							     GTK_DIALOG_DESTROY_WITH_PARENT,
 							     GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 							     NULL);
-	  gtk_dialog_set_has_separator (GTK_DIALOG (pprivate->preferences), FALSE);
 	  gtk_container_set_border_width (GTK_CONTAINER (pprivate->preferences), 5);
 	  gtk_window_set_resizable (GTK_WINDOW (pprivate->preferences), FALSE);
 
@@ -383,7 +382,8 @@ impl_create_configure_dialog (RBPlugin *plugin)
 			    plugin);
 	  gtk_widget_hide_on_delete (pprivate->preferences);
 	  
-	  gtk_container_add (GTK_CONTAINER (GTK_DIALOG (pprivate->preferences)->vbox), pprivate->config_widget);
+	  gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area(GTK_DIALOG (pprivate->preferences))),
+	       pprivate->config_widget);
      }
      
      gtk_widget_show_all (pprivate->preferences);

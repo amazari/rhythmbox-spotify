@@ -3,8 +3,6 @@
 
 #include <string.h> /* For strlen */
 
-#include <glib/gi18n-lib.h>
-
 
 G_DEFINE_TYPE (RBSpotifySource, rbspotifysource, RB_TYPE_BROWSER_SOURCE);
 
@@ -43,7 +41,7 @@ entry_set_string_prop (RhythmDB        *db,
 	const gchar *tmp;
 
 	if (str == NULL || *str == '\0' || !g_utf8_validate (str, -1, NULL)) {
-		tmp = _("Unknown");
+		tmp = "Unknown";
 	} else {
 		tmp = str;
 	}
@@ -107,6 +105,8 @@ void rbspotifysource_search(RBSource *source, RBSourceSearch *search, const char
 
      if (self == NULL || self->priv->sess == NULL || cur_text == NULL)
 	  return;
-     /*sp_search *s =*/ sp_search_create(self->priv->sess, cur_text, 0, 100, rbspotify_search_complete_cb, self);
+     /*sp_search *s =*/ //sp_search_create(self->priv->sess, cur_text, 0, 100, rbspotify_search_complete_cb, self);
+     //sp_radio_search_create(sp_session *session, unsigned int from_year, unsigned int to_year, sp_radio_genre genres, search_complete_cb *callback, void *userdata);
+
 }
 

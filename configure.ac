@@ -8,21 +8,21 @@ AC_CONFIG_HEADERS([config.h])
 
 AM_INIT_AUTOMAKE([1.11])
 
+IT_PROG_INTLTOOL([0.41.0])
 AC_PROG_CC
 
 LT_PREREQ([2.2])
 LT_INIT
 
-pkg_modules="glib-2.0 >= 2.24.1
-             gobject-2.0 >= 2.24.1
-			 rhythmbox
-			 gtk+-3.0
-			 libsoup-2.4"
+pkg_modules="rhythmbox libspotify"
              
-PKG_CHECK_MODULES(DEPENDENCIES, [$pkg_modules])
+PKG_CHECK_MODULES([DEPENDENCIES], [$pkg_modules])
 
-AC_SUBST(DEPENDENCIES_CFLAGS)
-AC_SUBST(DEPENDENCIES_LIBS)
+GETTEXT_PACKAGE=rhythmbox-spotify
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Define to the Gettext package name])
+
+AM_GLIB_GNU_GETTEXT
 
 AC_CONFIG_FILES([
 Makefile

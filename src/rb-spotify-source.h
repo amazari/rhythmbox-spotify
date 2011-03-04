@@ -6,8 +6,10 @@
 #ifndef __RBSPOTIFYSOURCE_H__
 #define __RBSPOTIFYSOURCE_H__
 
+#include "config.h"
+
 #include <glib-object.h>
-#include <spotify/api.h>
+#include <libspotify/api.h>
 
 /*
  * Potentially, include other headers on which this header depends.
@@ -31,7 +33,7 @@ G_BEGIN_DECLS
 typedef struct _RBSpotifySourcePrivate {
      sp_session *sess;
      RhythmDB *db;
-     RhythmDBEntryType type;
+     RhythmDBEntryType *type;
 } RBSpotifySourcePrivate;
 
 typedef struct {
