@@ -1,1 +1,8 @@
-Sample readme file for rhythmbox-spotify project.
+This plugin provides Spotify integration for Rhythmbox
+
+It is based (99%) on https://github.com/ivankelly/Rhythmbox-Spotify-Plugin/ by
+Ivan Kelly.
+This is merely a port of it to the out-of-tree plugin building added recently
+to Rhythmbox and a port to the newer APIs.
+
+It currently provides Search and playing, with playlist importation to come soon.
