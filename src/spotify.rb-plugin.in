@@ -1,5 +1,5 @@
 [RB Plugin]
-Module=rhythmbox-spotify
+Module=spotify
 IAge=1
 _Name=Spotify Plugin
 _Description=Simple Spotify plugin

@@ -1,17 +1,17 @@
 plugindir = ${libdir}/rhythmbox/plugins/spotify
 
-plugin_LTLIBRARIES = librhythmbox-spotify.la
+plugin_LTLIBRARIES = libspotify.la
 
-librhythmbox_spotify_la_SOURCES = audio.c		   \
-								  appkey.c		   \
-								  rb-spotify-src.c \
-								  rb-spotify-source.c \
-								  rb-spotify-plugin.c
+libspotify_la_SOURCES = audio.c		   \
+						appkey.c		   \
+					    rb-spotify-src.c \
+			  		    rb-spotify-source.c \
+						rb-spotify-plugin.c
 
-librhythmbox_spotify_la_LIBADD = $(DEPENDENCIES_LIBS)								  
-librhythmbox_spotify_la_CFLAGS = $(DEPENDENCIES_CFLAGS)
-librhythmbox_spotify_la_LDFLAGS = -module -avoid-version
-librhythmbox_spotify_la_LIBTOOLFLAGS = --tag=disable-static
+libspotify_la_LIBADD = $(DEPENDENCIES_LIBS)								  
+libspotify_la_CFLAGS = $(DEPENDENCIES_CFLAGS)
+libspotify_la_LDFLAGS = -module -avoid-version
+libspotify_la_LIBTOOLFLAGS = --tag=disable-static
 
 gtkbuilderdir = $(plugindir)
 gtkbuilder_DATA = spotify-prefs.ui

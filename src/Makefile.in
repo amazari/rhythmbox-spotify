@@ -73,18 +73,15 @@ am__installdirs = "$(DESTDIR)$(plugindir)" \
 	"$(DESTDIR)$(gtkbuilderdir)" "$(DESTDIR)$(plugindir)"
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-librhythmbox_spotify_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_librhythmbox_spotify_la_OBJECTS = librhythmbox_spotify_la-audio.lo \
-	librhythmbox_spotify_la-appkey.lo \
-	librhythmbox_spotify_la-rb-spotify-src.lo \
-	librhythmbox_spotify_la-rb-spotify-source.lo \
-	librhythmbox_spotify_la-rb-spotify-plugin.lo
-librhythmbox_spotify_la_OBJECTS =  \
-	$(am_librhythmbox_spotify_la_OBJECTS)
-librhythmbox_spotify_la_LINK = $(LIBTOOL) --tag=CC \
-	$(librhythmbox_spotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(librhythmbox_spotify_la_CFLAGS) \
-	$(CFLAGS) $(librhythmbox_spotify_la_LDFLAGS) $(LDFLAGS) -o $@
+libspotify_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+am_libspotify_la_OBJECTS = libspotify_la-audio.lo \
+	libspotify_la-appkey.lo libspotify_la-rb-spotify-src.lo \
+	libspotify_la-rb-spotify-source.lo \
+	libspotify_la-rb-spotify-plugin.lo
+libspotify_la_OBJECTS = $(am_libspotify_la_OBJECTS)
+libspotify_la_LINK = $(LIBTOOL) --tag=CC $(libspotify_la_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libspotify_la_CFLAGS) \
+	$(CFLAGS) $(libspotify_la_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -98,8 +95,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(librhythmbox_spotify_la_SOURCES)
-DIST_SOURCES = $(librhythmbox_spotify_la_SOURCES)
+SOURCES = $(libspotify_la_SOURCES)
+DIST_SOURCES = $(libspotify_la_SOURCES)
 DATA = $(gtkbuilder_DATA) $(plugin_DATA)
 ETAGS = etags
 CTAGS = ctags
@@ -246,17 +243,17 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 plugindir = ${libdir}/rhythmbox/plugins/spotify
-plugin_LTLIBRARIES = librhythmbox-spotify.la
-librhythmbox_spotify_la_SOURCES = audio.c		   \
-								  appkey.c		   \
-								  rb-spotify-src.c \
-								  rb-spotify-source.c \
-								  rb-spotify-plugin.c
+plugin_LTLIBRARIES = libspotify.la
+libspotify_la_SOURCES = audio.c		   \
+						appkey.c		   \
+					    rb-spotify-src.c \
+			  		    rb-spotify-source.c \
+						rb-spotify-plugin.c
 
-librhythmbox_spotify_la_LIBADD = $(DEPENDENCIES_LIBS)								  
-librhythmbox_spotify_la_CFLAGS = $(DEPENDENCIES_CFLAGS)
-librhythmbox_spotify_la_LDFLAGS = -module -avoid-version
-librhythmbox_spotify_la_LIBTOOLFLAGS = --tag=disable-static
+libspotify_la_LIBADD = $(DEPENDENCIES_LIBS)								  
+libspotify_la_CFLAGS = $(DEPENDENCIES_CFLAGS)
+libspotify_la_LDFLAGS = -module -avoid-version
+libspotify_la_LIBTOOLFLAGS = --tag=disable-static
 gtkbuilderdir = $(plugindir)
 gtkbuilder_DATA = spotify-prefs.ui
 plugin_in_files = spotify.rb-plugin
@@ -347,8 +344,8 @@ clean-pluginLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-librhythmbox-spotify.la: $(librhythmbox_spotify_la_OBJECTS) $(librhythmbox_spotify_la_DEPENDENCIES) 
-	$(librhythmbox_spotify_la_LINK) -rpath $(plugindir) $(librhythmbox_spotify_la_OBJECTS) $(librhythmbox_spotify_la_LIBADD) $(LIBS)
+libspotify.la: $(libspotify_la_OBJECTS) $(libspotify_la_DEPENDENCIES) 
+	$(libspotify_la_LINK) -rpath $(plugindir) $(libspotify_la_OBJECTS) $(libspotify_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -356,11 +353,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/librhythmbox_spotify_la-appkey.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/librhythmbox_spotify_la-audio.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/librhythmbox_spotify_la-rb-spotify-plugin.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/librhythmbox_spotify_la-rb-spotify-source.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/librhythmbox_spotify_la-rb-spotify-src.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libspotify_la-appkey.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libspotify_la-audio.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libspotify_la-rb-spotify-plugin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libspotify_la-rb-spotify-source.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libspotify_la-rb-spotify-src.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -383,40 +380,40 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-librhythmbox_spotify_la-audio.lo: audio.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(librhythmbox_spotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librhythmbox_spotify_la_CFLAGS) $(CFLAGS) -MT librhythmbox_spotify_la-audio.lo -MD -MP -MF $(DEPDIR)/librhythmbox_spotify_la-audio.Tpo -c -o librhythmbox_spotify_la-audio.lo `test -f 'audio.c' || echo '$(srcdir)/'`audio.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/librhythmbox_spotify_la-audio.Tpo $(DEPDIR)/librhythmbox_spotify_la-audio.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='audio.c' object='librhythmbox_spotify_la-audio.lo' libtool=yes @AMDEPBACKSLASH@
+libspotify_la-audio.lo: audio.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(libspotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libspotify_la_CFLAGS) $(CFLAGS) -MT libspotify_la-audio.lo -MD -MP -MF $(DEPDIR)/libspotify_la-audio.Tpo -c -o libspotify_la-audio.lo `test -f 'audio.c' || echo '$(srcdir)/'`audio.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libspotify_la-audio.Tpo $(DEPDIR)/libspotify_la-audio.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='audio.c' object='libspotify_la-audio.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(librhythmbox_spotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librhythmbox_spotify_la_CFLAGS) $(CFLAGS) -c -o librhythmbox_spotify_la-audio.lo `test -f 'audio.c' || echo '$(srcdir)/'`audio.c
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(libspotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libspotify_la_CFLAGS) $(CFLAGS) -c -o libspotify_la-audio.lo `test -f 'audio.c' || echo '$(srcdir)/'`audio.c
 
-librhythmbox_spotify_la-appkey.lo: appkey.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(librhythmbox_spotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librhythmbox_spotify_la_CFLAGS) $(CFLAGS) -MT librhythmbox_spotify_la-appkey.lo -MD -MP -MF $(DEPDIR)/librhythmbox_spotify_la-appkey.Tpo -c -o librhythmbox_spotify_la-appkey.lo `test -f 'appkey.c' || echo '$(srcdir)/'`appkey.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/librhythmbox_spotify_la-appkey.Tpo $(DEPDIR)/librhythmbox_spotify_la-appkey.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='appkey.c' object='librhythmbox_spotify_la-appkey.lo' libtool=yes @AMDEPBACKSLASH@
+libspotify_la-appkey.lo: appkey.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(libspotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libspotify_la_CFLAGS) $(CFLAGS) -MT libspotify_la-appkey.lo -MD -MP -MF $(DEPDIR)/libspotify_la-appkey.Tpo -c -o libspotify_la-appkey.lo `test -f 'appkey.c' || echo '$(srcdir)/'`appkey.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libspotify_la-appkey.Tpo $(DEPDIR)/libspotify_la-appkey.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='appkey.c' object='libspotify_la-appkey.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(librhythmbox_spotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librhythmbox_spotify_la_CFLAGS) $(CFLAGS) -c -o librhythmbox_spotify_la-appkey.lo `test -f 'appkey.c' || echo '$(srcdir)/'`appkey.c
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(libspotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libspotify_la_CFLAGS) $(CFLAGS) -c -o libspotify_la-appkey.lo `test -f 'appkey.c' || echo '$(srcdir)/'`appkey.c
 
-librhythmbox_spotify_la-rb-spotify-src.lo: rb-spotify-src.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(librhythmbox_spotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librhythmbox_spotify_la_CFLAGS) $(CFLAGS) -MT librhythmbox_spotify_la-rb-spotify-src.lo -MD -MP -MF $(DEPDIR)/librhythmbox_spotify_la-rb-spotify-src.Tpo -c -o librhythmbox_spotify_la-rb-spotify-src.lo `test -f 'rb-spotify-src.c' || echo '$(srcdir)/'`rb-spotify-src.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/librhythmbox_spotify_la-rb-spotify-src.Tpo $(DEPDIR)/librhythmbox_spotify_la-rb-spotify-src.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rb-spotify-src.c' object='librhythmbox_spotify_la-rb-spotify-src.lo' libtool=yes @AMDEPBACKSLASH@
+libspotify_la-rb-spotify-src.lo: rb-spotify-src.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(libspotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libspotify_la_CFLAGS) $(CFLAGS) -MT libspotify_la-rb-spotify-src.lo -MD -MP -MF $(DEPDIR)/libspotify_la-rb-spotify-src.Tpo -c -o libspotify_la-rb-spotify-src.lo `test -f 'rb-spotify-src.c' || echo '$(srcdir)/'`rb-spotify-src.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libspotify_la-rb-spotify-src.Tpo $(DEPDIR)/libspotify_la-rb-spotify-src.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rb-spotify-src.c' object='libspotify_la-rb-spotify-src.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(librhythmbox_spotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librhythmbox_spotify_la_CFLAGS) $(CFLAGS) -c -o librhythmbox_spotify_la-rb-spotify-src.lo `test -f 'rb-spotify-src.c' || echo '$(srcdir)/'`rb-spotify-src.c
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(libspotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libspotify_la_CFLAGS) $(CFLAGS) -c -o libspotify_la-rb-spotify-src.lo `test -f 'rb-spotify-src.c' || echo '$(srcdir)/'`rb-spotify-src.c
 
-librhythmbox_spotify_la-rb-spotify-source.lo: rb-spotify-source.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(librhythmbox_spotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librhythmbox_spotify_la_CFLAGS) $(CFLAGS) -MT librhythmbox_spotify_la-rb-spotify-source.lo -MD -MP -MF $(DEPDIR)/librhythmbox_spotify_la-rb-spotify-source.Tpo -c -o librhythmbox_spotify_la-rb-spotify-source.lo `test -f 'rb-spotify-source.c' || echo '$(srcdir)/'`rb-spotify-source.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/librhythmbox_spotify_la-rb-spotify-source.Tpo $(DEPDIR)/librhythmbox_spotify_la-rb-spotify-source.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rb-spotify-source.c' object='librhythmbox_spotify_la-rb-spotify-source.lo' libtool=yes @AMDEPBACKSLASH@
+libspotify_la-rb-spotify-source.lo: rb-spotify-source.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(libspotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libspotify_la_CFLAGS) $(CFLAGS) -MT libspotify_la-rb-spotify-source.lo -MD -MP -MF $(DEPDIR)/libspotify_la-rb-spotify-source.Tpo -c -o libspotify_la-rb-spotify-source.lo `test -f 'rb-spotify-source.c' || echo '$(srcdir)/'`rb-spotify-source.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libspotify_la-rb-spotify-source.Tpo $(DEPDIR)/libspotify_la-rb-spotify-source.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rb-spotify-source.c' object='libspotify_la-rb-spotify-source.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(librhythmbox_spotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librhythmbox_spotify_la_CFLAGS) $(CFLAGS) -c -o librhythmbox_spotify_la-rb-spotify-source.lo `test -f 'rb-spotify-source.c' || echo '$(srcdir)/'`rb-spotify-source.c
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(libspotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libspotify_la_CFLAGS) $(CFLAGS) -c -o libspotify_la-rb-spotify-source.lo `test -f 'rb-spotify-source.c' || echo '$(srcdir)/'`rb-spotify-source.c
 
-librhythmbox_spotify_la-rb-spotify-plugin.lo: rb-spotify-plugin.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(librhythmbox_spotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librhythmbox_spotify_la_CFLAGS) $(CFLAGS) -MT librhythmbox_spotify_la-rb-spotify-plugin.lo -MD -MP -MF $(DEPDIR)/librhythmbox_spotify_la-rb-spotify-plugin.Tpo -c -o librhythmbox_spotify_la-rb-spotify-plugin.lo `test -f 'rb-spotify-plugin.c' || echo '$(srcdir)/'`rb-spotify-plugin.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/librhythmbox_spotify_la-rb-spotify-plugin.Tpo $(DEPDIR)/librhythmbox_spotify_la-rb-spotify-plugin.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rb-spotify-plugin.c' object='librhythmbox_spotify_la-rb-spotify-plugin.lo' libtool=yes @AMDEPBACKSLASH@
+libspotify_la-rb-spotify-plugin.lo: rb-spotify-plugin.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(libspotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libspotify_la_CFLAGS) $(CFLAGS) -MT libspotify_la-rb-spotify-plugin.lo -MD -MP -MF $(DEPDIR)/libspotify_la-rb-spotify-plugin.Tpo -c -o libspotify_la-rb-spotify-plugin.lo `test -f 'rb-spotify-plugin.c' || echo '$(srcdir)/'`rb-spotify-plugin.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libspotify_la-rb-spotify-plugin.Tpo $(DEPDIR)/libspotify_la-rb-spotify-plugin.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rb-spotify-plugin.c' object='libspotify_la-rb-spotify-plugin.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(librhythmbox_spotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librhythmbox_spotify_la_CFLAGS) $(CFLAGS) -c -o librhythmbox_spotify_la-rb-spotify-plugin.lo `test -f 'rb-spotify-plugin.c' || echo '$(srcdir)/'`rb-spotify-plugin.c
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(libspotify_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libspotify_la_CFLAGS) $(CFLAGS) -c -o libspotify_la-rb-spotify-plugin.lo `test -f 'rb-spotify-plugin.c' || echo '$(srcdir)/'`rb-spotify-plugin.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

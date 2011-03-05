@@ -75,6 +75,7 @@ audio_fifo_t g_audio_fifo;
  * The session callbacks
  */
 static void spcb_logged_in(sp_session *sess, sp_error error);
+static void spcb_logged_out(sp_session *sess);
 static void spcb_notify_main_thread(sp_session *sess);
 extern int spcb_music_delivery(sp_session *sess, const sp_audioformat *format, const void *frames, int num_frames);
 static void spcb_metadata_updated(sp_session *sess);
@@ -101,6 +102,7 @@ static void log_message(sp_session *session, const char *data)
 
 static sp_session_callbacks session_callbacks = {
 	.logged_in = &spcb_logged_in,
+	.logged_out = &spcb_logged_out,
 	.notify_main_thread = &spcb_notify_main_thread,
 	.music_delivery = &spcb_music_delivery,
 	.metadata_updated = &spcb_metadata_updated,
@@ -179,7 +181,7 @@ rb_spotify_plugin_finalize (GObject *object)
 
 void* notification_routine(void *s)
 {
-     fprintf(stderr, "Start notification");
+     fprintf(stderr, "Start notification\n");
      sp_session *sp = (sp_session*)s;
      int next_timeout = 0;
 
@@ -212,6 +214,21 @@ void* notification_routine(void *s)
      }
 }
 
+static void sp_connect(sp_session *session)
+{
+  char *username = eel_gconf_get_string (CONF_SPOTIFY_USERNAME);
+  char *password = eel_gconf_get_string (CONF_SPOTIFY_PASSWORD);
+  if (username == NULL || password == NULL) {
+     rb_error_dialog (NULL, "Spotify Plugin", "Username and password not set.");
+     return;
+  }
+
+  if (sp_session_connectionstate(session) == SP_CONNECTION_STATE_LOGGED_IN)
+    sp_session_logout(session);
+
+  sp_session_login(session, username, password);
+}
+
 static void
 impl_activate (RBPlugin *plugin,
 	       RBShell *shell)
@@ -240,25 +257,17 @@ impl_activate (RBPlugin *plugin,
 	     pprivate->sess = NULL;
 	     return;
 	}
-	fprintf(stderr, "err: %x", err);
 
-	err = pthread_create(&pprivate->notify_thread, 0, notification_routine, pprivate->sess);
-	fprintf(stderr, "Thread created");
-	if (err != 0)
-	{
-	     fprintf(stderr, "Error creating notification thread %x\n", err);
-	     return;
-	}
+//	err = pthread_create(&pprivate->notify_thread, 0, notification_routine, pprivate->sess);
+//	fprintf(stderr, "Thread created");
+//	if (err != 0)
+//	{
+//	     fprintf(stderr, "Error creating notification thread %x\n", err);
+//	     return;
+//	}
 
-	username = "scaroo";//eel_gconf_get_string (CONF_SPOTIFY_USERNAME);
-	password = "blink182";//eel_gconf_get_string (CONF_SPOTIFY_PASSWORD);
-	if (username == NULL || password == NULL) {
-	     rb_error_dialog (NULL, "Spotify Plugin", "Username and password not set.");
-	     return;
-	}
+	sp_connect(pprivate->sess);
 	
-	sp_session_login(pprivate->sess, username, password);
-
 	rbspotifysrc_set_plugin(plugin);
 	
 	g_object_get (shell, "db", &db, NULL);
@@ -293,16 +302,19 @@ impl_activate (RBPlugin *plugin,
 }
 
 static void
-impl_deactivate	(RBPlugin *plugin,
+impl_deactivate (RBPlugin *plugin,
 		 RBShell *shell)
 {
-     //rb_error_dialog (NULL, _("Spotify Plugin"), "Spotify plugin deactivated");
+  sp_session *session = RBSPOTIFYPLUGIN(plugin)->priv->sess;
+   sp_session_logout(session);
+   sp_session_release(session);
 }
 
 static void
 preferences_response_cb (GtkWidget *dialog, gint response, RBPlugin *plugin)
 {
 	gtk_widget_hide (dialog);
+	sp_connect(RBSPOTIFYPLUGIN(plugin)->priv->sess);
 }
 
 
@@ -345,26 +357,26 @@ impl_create_configure_dialog (RBPlugin *plugin)
 	       GtkBuilder *xml;
 	       char *gladefile;
 
-	       gladefile = rb_plugin_find_file (plugin, "spotify-prefs.glade");
+	       gladefile = rb_plugin_find_file (plugin, "spotify-prefs.ui");
 	       g_assert (gladefile != NULL);
 
 	       xml = rb_builder_load(gladefile, plugin);
 
 
-	       pprivate->config_widget = gtk_builder_get_object(xml, "spotify_vbox");
-	       pprivate->username_entry = gtk_builder_get_object (xml, "username_entry");
-	       pprivate->username_label = gtk_builder_get_object(xml, "username_label");
-	       pprivate->password_entry = gtk_builder_get_object(xml, "password_entry");
-	       pprivate->password_label = gtk_builder_get_object(xml, "password_label");
+	       pprivate->config_widget = GTK_WIDGET(gtk_builder_get_object(xml, "spotify_vbox"));
+	       pprivate->username_entry = GTK_WIDGET(gtk_builder_get_object (xml, "username_entry"));
+	       pprivate->username_label = GTK_WIDGET(gtk_builder_get_object(xml, "username_label"));
+	       pprivate->password_entry = GTK_WIDGET(gtk_builder_get_object(xml, "password_entry"));
+	       pprivate->password_label = GTK_WIDGET(gtk_builder_get_object(xml, "password_label"));
 	
-	       g_object_unref (G_OBJECT (xml));
+	      // g_object_unref (G_OBJECT (xml));
 
 	  }
 
 	  t = eel_gconf_get_string (CONF_SPOTIFY_USERNAME);
 	  gtk_entry_set_text (GTK_ENTRY (pprivate->username_entry),
 			      t ? t : "");
-	  t = eel_gconf_get_string (CONF_SPOTIFY_USERNAME);
+	  t = eel_gconf_get_string (CONF_SPOTIFY_PASSWORD);
 	  gtk_entry_set_text (GTK_ENTRY (pprivate->password_entry),
 			      t ? t : "");
 
@@ -395,13 +407,23 @@ void spcb_logged_in(sp_session *sess, sp_error error)
      fprintf(stderr, "Spotify logged in\n");
 }
 
+void spcb_logged_out(sp_session *sess)
+{
+     fprintf(stderr, "Spotify logged out\n");
+}
+
 void spcb_notify_main_thread(sp_session *sess)
 {
      fprintf(stderr, "Spotify notify\n");
-     pthread_mutex_lock(&g_notify_mutex);
-     g_notify_do = 1;
-     pthread_cond_signal(&g_notify_cond);
-     pthread_mutex_unlock(&g_notify_mutex);
+
+     int next_timeout;
+
+     sp_session_process_events(sess, &next_timeout);
+
+   //  pthread_mutex_lock(&g_notify_mutex);
+   //  g_notify_do = 1;
+   //  pthread_cond_signal(&g_notify_cond);
+   //  pthread_mutex_unlock(&g_notify_mutex);
 }
 
 
